@@ -7,7 +7,6 @@
   "scripts": {
     "start": "node --env-file=.env src/index.js",
     "dev": "nodemon --env-file=.env src/index.js"
-    // "dev": "nodemon -r dotenv/config src/index.js"
   },
   "keywords": [
     "javascript",
