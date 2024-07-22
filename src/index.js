@@ -7,7 +7,7 @@ import error from "mongoose/lib/error/index.js";
 import { app } from "./app.js";
 
 dotenv.config({
-    path: './env'
+    path: './.env'
 })
 
 

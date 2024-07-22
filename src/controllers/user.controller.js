@@ -15,30 +15,30 @@ const registerUser = asyncHandler(async(req, res) => {
     // check for user creation 
     // return response
     
-    const {fullName, email, username, password}= req.body
+    const {fullName, email, userName, password}= req.body
     console.log("fullName: ", fullName);
     console.log("email: ", email);
-    console.log("username: ", username);
+    console.log("username: ", userName);
     console.log("password: ", password);   
 
     console.log("Registered User: ", registerUser);
     if(
-        [fullName, email, username, password].some((field)=>
+        [fullName, email, userName, password].some((field)=>
         field?.trim()==="")
     )
     {
         throw new ApiError(400, "All fields are required")
     }
 
-    const existingUser = User.findOne({
-        $or: [{ username }, { email }]
+    const existingUser = await User.findOne({
+        $or: [{ userName }, { email }]
     })
 
     console.log("Existing User: ", existingUser);
     if (existingUser){
         throw new ApiError(409, "User already exists with same username or password")
     }
-
+    console.log(req.files);
     const avatarLocalPath = req.files?.avatar[0]?.path;
     const coverImageLocalPath = req.files?.coverImage[0]?.path;
 
@@ -63,11 +63,12 @@ const registerUser = asyncHandler(async(req, res) => {
         coverImage: coverImage?.url || "",
         email,
         password,
-        username: username.toLowerCase()
+        userName: userName.toLowerCase()
     })
 
     const userCreated = await User.findById(user._id).select(" -password -refreshToken")
     console.log("User's creation: ", Boolean(userCreated)); 
+    console.log(user);
 
     if(!userCreated){
         throw new ApiError(500, "Something went wrong please try again")
