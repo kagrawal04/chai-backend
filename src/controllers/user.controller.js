@@ -9,8 +9,8 @@ import mongoose from "mongoose";
 const generateAccessAndRefreshToken = async(userId)=>{
     try {
         const user =  await User.findById(userId);
-        const accessToken = await User.generateAccessToken();
-        const refreshToken = await User.generateRefreshToken();
+        const accessToken = user.generateAccessToken();
+        const refreshToken = user.generateRefreshToken();
         user.refreshToken = refreshToken;
         await user.save({validateBeforeSave: false});
         
@@ -155,8 +155,8 @@ const logoutUser = asyncHandler(async(req, res)=>{
     await User.findByIdAndUpdate(
         req.user._id,
         {
-            $set:{
-                refreshToken: undefined
+            $unset:{
+                refreshToken: 1 // this removes the filee from the document
             }
         },
         {
